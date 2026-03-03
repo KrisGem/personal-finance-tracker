@@ -1,5 +1,6 @@
 package com.kristag.pft.service;
 
+import com.kristag.pft.controller.error.NotFoundException;
 import com.kristag.pft.domain.entity.Account;
 import com.kristag.pft.domain.entity.User;
 import com.kristag.pft.domain.repository.AccountRepository;
@@ -10,7 +11,7 @@ import com.kristag.pft.dto.AccountUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,13 +48,13 @@ public class AccountService {
 
     public AccountResponse get(UUID userId, UUID accountId) {
         Account acc = accountRepository.findByIdAndUser_Id(accountId, userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException("Account not found: " + accountId));
         return toResponse(acc);
     }
 
     public AccountResponse update(UUID userId, UUID accountId, AccountUpdateRequest req) {
         Account acc = accountRepository.findByIdAndUser_Id(accountId, userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException("Account not found: " + accountId));
 
         acc.update(req.name(), req.currency().toUpperCase(), req.openingBalance());
         return toResponse(accountRepository.save(acc));
@@ -61,7 +62,7 @@ public class AccountService {
 
     public void delete(UUID userId, UUID accountId) {
         Account acc = accountRepository.findByIdAndUser_Id(accountId, userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException("Account not found: " + accountId));
         accountRepository.delete(acc);
     }
 

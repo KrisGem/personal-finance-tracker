@@ -5,15 +5,18 @@ import com.kristag.pft.dto.TransactionCreateRequest;
 import com.kristag.pft.dto.TransactionResponse;
 import com.kristag.pft.service.TransactionService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@Validated
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
@@ -27,26 +30,26 @@ public class TransactionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TransactionResponse create(Authentication auth, @Valid @RequestBody TransactionCreateRequest req) {
-        UUID userId = (UUID) auth.getPrincipal();
+
+              UUID userId = UUID.fromString(auth.getName());
         return transactionService.create(userId, req);
     }
-
     @GetMapping("/{id}")
-    public TransactionResponse get(Authentication auth, @PathVariable UUID id) {
-        UUID userId = (UUID) auth.getPrincipal();
+    public TransactionResponse get(Authentication auth, @PathVariable @NotNull UUID id) {
+        UUID userId = UUID.fromString(auth.getName());
         return transactionService.get(userId, id);
     }
 
     @PutMapping("/{id}")
     public TransactionResponse update(Authentication auth, @PathVariable UUID id, @Valid @RequestBody TransactionCreateRequest req) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return transactionService.update(userId, id, req);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(Authentication auth, @PathVariable UUID id) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         transactionService.delete(userId, id);
     }
 
@@ -60,7 +63,7 @@ public class TransactionController {
             @RequestParam(required = false) CategoryType type,
             Pageable pageable
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return transactionService.list(userId, from, to, accountId, categoryId, type, pageable);
     }
 }

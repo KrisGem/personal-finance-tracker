@@ -5,13 +5,16 @@ import com.kristag.pft.dto.AccountResponse;
 import com.kristag.pft.dto.AccountUpdateRequest;
 import com.kristag.pft.service.AccountService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.UUID;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
@@ -36,7 +39,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public AccountResponse get(Authentication auth, @PathVariable UUID id) {
+    public AccountResponse get(Authentication auth, @PathVariable  @NotNull UUID id) {
         UUID userId = (UUID) auth.getPrincipal();
         return accountService.get(userId, id);
     }

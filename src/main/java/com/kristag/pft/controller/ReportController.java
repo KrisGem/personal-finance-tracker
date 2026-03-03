@@ -4,9 +4,11 @@ import com.kristag.pft.dto.report.MonthlyReportResponse;
 import com.kristag.pft.service.ReportService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.UUID;
 
+@Validated
 @RestController
 @RequestMapping("/api/reports")
 public class ReportController {

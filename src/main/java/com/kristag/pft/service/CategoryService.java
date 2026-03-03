@@ -1,4 +1,5 @@
 package com.kristag.pft.service;
+import com.kristag.pft.controller.error.NotFoundException;
 import com.kristag.pft.domain.entity.Category;
 import com.kristag.pft.domain.entity.User;
 import com.kristag.pft.domain.repository.CategoryRepository;
@@ -26,7 +27,7 @@ public class CategoryService {
 
     public CategoryResponse create(UUID userId, CategoryCreateRequest req) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+                .orElseThrow(() -> new NotFoundException("Category  not found: " + userId));
 
         Category category = new Category(user, req.name(), req.type());
         return toResponse(categoryRepository.save(category));
@@ -40,13 +41,13 @@ public class CategoryService {
 
     public CategoryResponse get(UUID userId, UUID categoryId) {
         Category c = categoryRepository.findByIdAndUser_Id(categoryId, userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException("Category  not found: " + categoryId));
         return toResponse(c);
     }
 
     public CategoryResponse update(UUID userId, UUID categoryId, CategoryUpdateRequest req) {
         Category c = categoryRepository.findByIdAndUser_Id(categoryId, userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException("Category  not found: " + categoryId));
 
         c.update(req.name(), req.type());
         return toResponse(categoryRepository.save(c));
@@ -54,7 +55,7 @@ public class CategoryService {
 
     public void delete(UUID userId, UUID categoryId) {
         Category c = categoryRepository.findByIdAndUser_Id(categoryId, userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException("Category  not found: " + categoryId));
         categoryRepository.delete(c);
     }
 

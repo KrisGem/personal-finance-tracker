@@ -1,6 +1,7 @@
 package com.kristag.pft.service;
 
 
+import com.kristag.pft.controller.error.NotFoundException;
 import com.kristag.pft.domain.entity.Account;
 import com.kristag.pft.domain.entity.Category;
 import com.kristag.pft.domain.entity.Transaction;
@@ -37,12 +38,13 @@ public class TransactionService {
 
     public TransactionResponse create(UUID userId, TransactionCreateRequest req) {
         Account account = accountRepository.findByIdAndUser_Id(req.accountId(), userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+                .orElseThrow(() -> new NotFoundException("Account not found: " + req.accountId()));
 
         Category category = null;
+
         if (req.categoryId() != null) {
             category = categoryRepository.findByIdAndUser_Id(req.categoryId(), userId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+                    .orElseThrow(() -> new NotFoundException("Category not found: " + req.categoryId()));
         }
 
         Transaction tx = new Transaction(account, category, req.amount(), req.occurredAt(), req.note());
@@ -51,22 +53,20 @@ public class TransactionService {
 
     public TransactionResponse get(UUID userId, UUID txId) {
         Transaction tx = transactionRepository.findByIdAndAccount_User_Id(txId, userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
+                .orElseThrow(() -> new NotFoundException("Transaction not found: " + txId));
+        
         return toResponse(tx);
     }
 
     public TransactionResponse update(UUID userId, UUID txId, TransactionCreateRequest req) {
         Transaction tx = transactionRepository.findByIdAndAccount_User_Id(txId, userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
+                .orElseThrow(() -> new NotFoundException("Transaction not found: " + txId));
 
         Account account = accountRepository.findByIdAndUser_Id(req.accountId(), userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+                .orElseThrow(() -> new NotFoundException("Account not found: " + req.accountId()));
 
-        Category category = null;
-        if (req.categoryId() != null) {
-            category = categoryRepository.findByIdAndUser_Id(req.categoryId(), userId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
-        }
+        Category category = categoryRepository.findByIdAndUser_Id(req.categoryId(), userId)
+                .orElseThrow(() -> new NotFoundException("Category not found: " + req.categoryId()));
 
         tx.update(account, category, req.amount(), req.occurredAt(), req.note());
         return toResponse(transactionRepository.save(tx));
@@ -74,9 +74,10 @@ public class TransactionService {
 
     public void delete(UUID userId, UUID txId) {
         Transaction tx = transactionRepository.findByIdAndAccount_User_Id(txId, userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
+                .orElseThrow(() -> new NotFoundException("Transaction not found: " + txId));
         transactionRepository.delete(tx);
     }
+
 
 
     public Page<TransactionResponse> list(
