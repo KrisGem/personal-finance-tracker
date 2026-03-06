@@ -210,3 +210,19 @@ Swagger provides interactive documentation for all endpoints, including request/
   - how to run
   - sample cURL calls
 - Swagger UI screenshot added: `docs/swagger-ui.png`
+
+
+---
+## Authentication
+
+This API uses JWT Bearer authentication for protected endpoints.
+
+### How it works
+After successful login, the API returns a JWT token.  
+This token must be included in the `Authorization` header for secured requests.
+
+Example header:
+
+```http
+Authorization: Bearer <your-jwt-token>
+
