@@ -38,7 +38,7 @@ public class TransactionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TransactionResponse create(Authentication auth, @Valid @RequestBody TransactionCreateRequest req) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return transactionService.create(userId, req);
     }
 
@@ -48,7 +48,7 @@ public class TransactionController {
             Authentication auth,
             @Parameter(description = "Transaction id") @PathVariable @NotNull UUID id
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return transactionService.get(userId, id);
     }
 
@@ -59,7 +59,7 @@ public class TransactionController {
             @Parameter(description = "Transaction id") @PathVariable UUID id,
             @Valid @RequestBody TransactionCreateRequest req
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return transactionService.update(userId, id, req);
     }
 
@@ -70,7 +70,7 @@ public class TransactionController {
             Authentication auth,
             @Parameter(description = "Transaction id") @PathVariable UUID id
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         transactionService.delete(userId, id);
     }
 
@@ -95,7 +95,7 @@ public class TransactionController {
 
             @Parameter(hidden = true) Pageable pageable
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return transactionService.list(userId, from, to, accountId, categoryId, type, pageable);
     }
 }
