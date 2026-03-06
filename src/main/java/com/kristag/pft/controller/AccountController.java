@@ -34,14 +34,14 @@ public class AccountController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AccountResponse create(Authentication auth, @Valid @RequestBody AccountCreateRequest req) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return accountService.create(userId, req);
     }
 
     @Operation(summary = "List accounts")
     @GetMapping
     public List<AccountResponse> list(Authentication auth) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return accountService.list(userId);
     }
 
@@ -51,7 +51,7 @@ public class AccountController {
             Authentication auth,
             @Parameter(description = "Account id") @PathVariable @NotNull UUID id
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return accountService.get(userId, id);
     }
 
@@ -62,7 +62,7 @@ public class AccountController {
             @Parameter(description = "Account id") @PathVariable UUID id,
             @Valid @RequestBody AccountUpdateRequest req
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return accountService.update(userId, id, req);
     }
 
@@ -73,7 +73,7 @@ public class AccountController {
             Authentication auth,
             @Parameter(description = "Account id") @PathVariable UUID id
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         accountService.delete(userId, id);
     }
 }

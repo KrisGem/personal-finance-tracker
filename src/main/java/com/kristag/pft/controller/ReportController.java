@@ -31,7 +31,7 @@ public class ReportController {
             @Parameter(description = "Year", example = "2026") @RequestParam int year,
             @Parameter(description = "Month (1-12)", example = "3") @RequestParam int month
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return reportService.getMonthlyReport(userId, year, month);
     }
 }

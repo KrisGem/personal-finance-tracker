@@ -36,14 +36,14 @@ public class CategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryResponse create(Authentication auth, @Valid @RequestBody CategoryCreateRequest req) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return categoryService.create(userId, req);
     }
 
     @Operation(summary = "List categories")
     @GetMapping
     public List<CategoryResponse> list(Authentication auth) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return categoryService.list(userId);
     }
 
@@ -53,7 +53,7 @@ public class CategoryController {
             Authentication auth,
             @Parameter(description = "Category id") @PathVariable @NotNull UUID id
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return categoryService.get(userId, id);
     }
 
@@ -64,7 +64,7 @@ public class CategoryController {
             @Parameter(description = "Category id") @PathVariable UUID id,
             @Valid @RequestBody CategoryUpdateRequest req
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         return categoryService.update(userId, id, req);
     }
 
@@ -75,7 +75,7 @@ public class CategoryController {
             Authentication auth,
             @Parameter(description = "Category id") @PathVariable UUID id
     ) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         categoryService.delete(userId, id);
     }
 }
