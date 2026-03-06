@@ -223,6 +223,26 @@ This token must be included in the `Authorization` header for secured requests.
 
 Example header:
 
-```http
-Authorization: Bearer <your-jwt-token>
+`http
+ `Authorization: Bearer <your-jwt-token>:`
 
+
+---
+## Monthly Report
+
+The API provides a monthly report endpoint to summarize financial activity for a selected month.
+
+### Report includes
+- total income
+- total expenses
+- final balance
+
+### Example response
+
+```json
+{
+  "month": "2026-03",
+  "totalIncome": 2500.00,
+  "totalExpense": 1200.00,
+  "balance": 1300.00
+}
