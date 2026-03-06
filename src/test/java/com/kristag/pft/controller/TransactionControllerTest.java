@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Import;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.mockito.Mockito.*;
-import org.springframework.security.test.context.support.WithMockUser;
+
 
 import java.math.BigDecimal;
 import java.time.Instant;
