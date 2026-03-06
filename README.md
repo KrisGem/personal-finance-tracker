@@ -149,3 +149,64 @@ Transactions support CRUD operations and a list endpoint with filtering, paginat
 - **feat: accounts crud**
 - **feat: categories crud**
 - **feat: transactions crud + filtering**
+
+## Phase 5 — Monthly Reports (Aggregation + Projections)
+
+In Phase 5, I added a reporting module that generates **monthly summaries** of the user’s financial activity.  
+Instead of loading all transactions into memory, I use **JPA projections** to compute aggregates efficiently at the database level.
+
+### Key results
+- Reporting layer implemented with:
+  - `ReportController`
+  - `ReportService`
+- Report DTOs in `src/main/java/com/kristag/pft/dto/report/`
+- Aggregation projections in `src/main/java/com/kristag/pft/domain/repository/projection/`
+
+### What it provides (examples)
+- Monthly totals (income / expense)
+- High-level summary metrics used for dashboards or monthly overview screens
+
+---
+## Phase 6 — Validation + Standardized Error Handling
+
+In Phase 6, I improved API robustness and developer experience by adding consistent validation and centralized error responses.
+
+### Key results
+- Added/expanded **Jakarta Bean Validation** on request DTOs (e.g. `@NotNull`, `@Positive`, `@PastOrPresent`, `@Size`)
+- Standardized error handling moved into:
+  - `src/main/java/com/kristag/pft/controller/error/ApiExceptionHandler`
+  - `src/main/java/com/kristag/pft/controller/error/ApiError`
+  - `src/main/java/com/kristag/pft/controller/error/NotFoundException`
+- Controllers/services updated to throw domain-friendly exceptions (cleaner API responses)
+
+
+--- 
+## Phase 7 — Testing
+
+In Phase 7, I added automated tests to verify correctness and prevent regressions as the project grows.
+
+Key results
+- Test suite added under src/test/
+- Uses Spring Boot testing support (JUnit 5 / Spring Boot Test)
+
+
+---
+## Phase 8 — Swagger + README Polish (API Documentation)
+
+In Phase 8, I improved the developer experience by adding Swagger/OpenAPI documentation and polishing the README so anyone can run the project and explore the API quickly.
+Swagger provides interactive documentation for all endpoints, including request/response schemas, validation rules, and JWT authorization.
+
+### Key results
+- Swagger/OpenAPI added using **springdoc**
+- Swagger UI available at: **http://localhost:8080/swagger-ui.html**
+- Controllers annotated for clearer docs:
+  - Tags per module (Auth, Accounts, Categories, Transactions, Reports)
+  - Operation summaries and parameter descriptions
+  - JWT security scheme shown in Swagger (Authorize button)
+- Security configuration updated so Swagger endpoints are accessible (UI + `/v3/api-docs`)
+- README improved with:
+  - features
+  - tech stack
+  - how to run
+  - sample cURL calls
+- Swagger UI screenshot added: `docs/swagger-ui.png`

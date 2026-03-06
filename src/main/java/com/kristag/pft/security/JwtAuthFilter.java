@@ -24,6 +24,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     public JwtAuthFilter(JwtService jwtService) {
         this.jwtService = jwtService;
     }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.startsWith("/api/auth")
+                || path.equals("/swagger-ui.html")
+                || path.startsWith("/swagger-ui/")
+                || path.startsWith("/v3/api-docs");
+    }
 
     @Override
     protected void doFilterInternal(
@@ -41,7 +49,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = auth.substring(7);
         try {
             UUID userId = jwtService.validateAndGetUserId(token);
-
+            new UsernamePasswordAuthenticationToken(userId, null, List.of());
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     userId,
                     null,

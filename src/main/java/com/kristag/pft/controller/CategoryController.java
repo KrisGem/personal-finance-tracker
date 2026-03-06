@@ -14,8 +14,14 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.UUID;
 import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Validated
+@Tag(name = "Categories", description = "Manage categories used for transactions")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
@@ -26,6 +32,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    @Operation(summary = "Create category")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryResponse create(Authentication auth, @Valid @RequestBody CategoryCreateRequest req) {
@@ -33,27 +40,41 @@ public class CategoryController {
         return categoryService.create(userId, req);
     }
 
+    @Operation(summary = "List categories")
     @GetMapping
     public List<CategoryResponse> list(Authentication auth) {
         UUID userId = (UUID) auth.getPrincipal();
         return categoryService.list(userId);
     }
 
+    @Operation(summary = "Get category by id")
     @GetMapping("/{id}")
-    public CategoryResponse get(Authentication auth, @PathVariable @NotNull UUID id) {
+    public CategoryResponse get(
+            Authentication auth,
+            @Parameter(description = "Category id") @PathVariable @NotNull UUID id
+    ) {
         UUID userId = (UUID) auth.getPrincipal();
         return categoryService.get(userId, id);
     }
 
+    @Operation(summary = "Update category")
     @PutMapping("/{id}")
-    public CategoryResponse update(Authentication auth, @PathVariable UUID id, @Valid @RequestBody CategoryUpdateRequest req) {
+    public CategoryResponse update(
+            Authentication auth,
+            @Parameter(description = "Category id") @PathVariable UUID id,
+            @Valid @RequestBody CategoryUpdateRequest req
+    ) {
         UUID userId = (UUID) auth.getPrincipal();
         return categoryService.update(userId, id, req);
     }
 
+    @Operation(summary = "Delete category")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(Authentication auth, @PathVariable UUID id) {
+    public void delete(
+            Authentication auth,
+            @Parameter(description = "Category id") @PathVariable UUID id
+    ) {
         UUID userId = (UUID) auth.getPrincipal();
         categoryService.delete(userId, id);
     }
